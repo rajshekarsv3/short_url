@@ -1,10 +1,11 @@
 class Api::V1::UrlsController < ApplicationController
 	before_action :authenticate
-	before_action :set_url, only: [:show,:update,:destroy] 
+	before_action :set_url, only: [:show,:update,:destroy,:visits] 
+	
 	def index
-		render json: {urls: @current_user.urls}
+    set_urls(@current_user.urls,@current_user.urls.first(10))
+		render json: {urls: @urls}
 	end
-
 	def create
 		@url = frame_url
 		if @url.save
@@ -31,6 +32,9 @@ class Api::V1::UrlsController < ApplicationController
 			render json: { error: @url.errors.full_messages}
 		end
 	end
+	def visits
+		render json: {visits: @url.url_visits}
+	end
 
 
 	private
@@ -49,5 +53,13 @@ class Api::V1::UrlsController < ApplicationController
 	def url_params
 		params.require(:url).permit(:original_url)
 	end
+
+	def set_urls(obj,model)
+    if params[:limit].present? && params[:offset].present?
+      @urls = obj.limit(params[:limit]).offset(params[:offset])
+    else
+      @urls = model
+    end
+  end
 	
 end

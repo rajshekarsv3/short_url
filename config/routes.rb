@@ -3,6 +3,7 @@ Rails.application.routes.draw do
     namespace :v1 do
       post 'login' => 'users#login'
       post 'signup' => 'users#signup'
+      get 'urls/:id/visits' => 'urls#visits'
       resources :urls
     end
   end

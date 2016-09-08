@@ -1,5 +1,5 @@
 class Url < ActiveRecord::Base
-	has_many :url_visits
+	has_many :url_visits, dependent: :destroy
 
 	belongs_to :user
 
